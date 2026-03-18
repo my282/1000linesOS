@@ -1,1 +1,1 @@
-/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/kernel: /home/famous282/1000linesOS/kernel/src/kernel.rs /home/famous282/1000linesOS/kernel/src/main.rs
+/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/kernel: /home/famous282/1000linesOS/kernel/src/common.rs /home/famous282/1000linesOS/kernel/src/kernel.rs /home/famous282/1000linesOS/kernel/src/main.rs

@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+mod common;
 mod kernel;
 
 use core::panic::PanicInfo;
