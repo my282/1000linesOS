@@ -1,0 +1,20 @@
+[package]
+name = "kernel"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "kernel"
+path = "src/main.rs"
+test = false
+
+
+[profile.dev]
+panic = "abort"
+opt-level = 2
+debug = true
+
+[profile.release]
+panic = "abort"
+opt-level = "s"
+debug = true
