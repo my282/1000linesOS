@@ -1,5 +1,5 @@
-   0.045787432s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: fingerprint error for kernel v0.1.0 (/home/famous282/1000linesOS/kernel)/Check { test: true }/TargetInner { name: "kernel", tested: false, doc: true, ..: with_path("/home/famous282/1000linesOS/kernel/src/main.rs", Edition2024) }
-   0.045828295s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-1a5aa71dabc2c5ac/test-bin-kernel`
+   0.013113932s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: fingerprint error for kernel v0.1.0 (/home/famous282/1000linesOS/kernel)/Check { test: true }/TargetInner { name: "kernel", tested: false, doc: true, ..: with_path("/home/famous282/1000linesOS/kernel/src/main.rs", Edition2024) }
+   0.013162458s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-1a5aa71dabc2c5ac/test-bin-kernel`
 
 Caused by:
     No such file or directory (os error 2)
@@ -43,11 +43,5 @@ Stack backtrace:
   25: __libc_start_main_impl
              at ./csu/../csu/libc-start.c:360:3
   26: <unknown>
-   0.104544059s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: stale: changed "/home/famous282/1000linesOS/kernel/src/kernel.rs"
-   0.104567327s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:           (vs) "/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-09ceea3a553a0665/dep-bin-kernel"
-   0.104571289s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:                FileTime { seconds: 1773830393, nanos: 539519925 } < FileTime { seconds: 1773830415, nanos: 169434646 }
-   0.104607848s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: fingerprint dirty for kernel v0.1.0 (/home/famous282/1000linesOS/kernel)/Check { test: false }/TargetInner { name: "kernel", tested: false, doc: true, ..: with_path("/home/famous282/1000linesOS/kernel/src/main.rs", Edition2024) }
-   0.104625786s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleItem(ChangedFile { reference: "/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-09ceea3a553a0665/dep-bin-kernel", reference_mtime: FileTime { seconds: 1773830393, nanos: 539519925 }, stale: "/home/famous282/1000linesOS/kernel/src/kernel.rs", stale_mtime: FileTime { seconds: 1773830415, nanos: 169434646 } }))
     Checking kernel v0.1.0 (/home/famous282/1000linesOS/kernel)
 error: could not compile `kernel` (bin "kernel" test) due to 1 previous error
-warning: build failed, waiting for other jobs to finish...
