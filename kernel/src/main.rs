@@ -5,8 +5,13 @@ mod kernel;
 
 use core::panic::PanicInfo;
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("Kernel panic:");
+    println!("{}", info);
+
     loop {
-        // CPUを休止させる（先ほどのwfiなど）
+        unsafe {
+            core::arch::asm!("wfi");
+        }
     }
 }

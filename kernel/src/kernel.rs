@@ -1,6 +1,7 @@
 use crate::println;
 use core::arch::asm;
 use core::arch::naked_asm;
+use core::ptr;
 
 unsafe extern "C" {
     static __bss: u8;
@@ -11,6 +12,16 @@ unsafe extern "C" {
 struct Sbiret {
     error: i32,
     value: i32,
+}
+
+unsafe fn memset(buf: *mut u8, c: u8, n: usize) {
+    let mut p = buf;
+    for _ in 0..n {
+        unsafe {
+            ptr::write_volatile(p, c);
+            p = p.add(1);
+        }
+    }
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -42,14 +53,14 @@ pub fn putchar(ch: char) {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn kernel_main() {
-    println!("\n\nHello {}", "World!");
-    println!("1 + 2 = {}, {:x}\n", 1 + 2, 0x1234abcd);
-
-    loop {
-        unsafe {
-            asm!("wfi");
-        }
+    unsafe {
+        let bss_start = ptr::addr_of!(__bss) as usize;
+        let bss_end = ptr::addr_of!(__bss_end) as usize;
+        memset(__bss as *mut u8, 0, bss_end - bss_start);
     }
+
+    panic!("booted!");
+    println!("unreachable here!");
 }
 
 #[unsafe(link_section = ".text.boot")]
