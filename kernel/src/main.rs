@@ -2,6 +2,7 @@
 #![no_main]
 mod common;
 mod kernel;
+mod trap;
 
 use core::panic::PanicInfo;
 #[panic_handler]
