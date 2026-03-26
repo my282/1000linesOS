@@ -1,8 +1,8 @@
-# asm! or naked_asm!
+# asm! vs naked_asm!
 ## asm!
-関数プロローグとエピローグを自動で生成
-Rustの変数との連携も簡単
+* **Automatic Stack Frame:** The compiler automatically generate function prologue and epilogue (like "push ebp", "ret").
+* **Variable Binding:** It supports accessing and manipulating local Rust variables within the Assembly blocks.
 ## naked_asm! 
-関数プロローグとエピローグを生成しない（自分で書く必要がある）
-Rust変数との紐づけも行えない
+* **No Stack Frame** The compiler does not generate function prologue and epilogue. (So, you have to write yourself if you need.)
+* **No Variable Binding:** Cannot directly reference local Rust variables.
 
