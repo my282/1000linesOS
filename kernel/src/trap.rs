@@ -1,3 +1,5 @@
+use core::arch::asm;
+
 #[repr(C)]
 pub struct Trap_frame {
     pub ra: u32,
@@ -33,9 +35,41 @@ pub struct Trap_frame {
     pub sp: u32,
 }
 
-fn read_scause() -> u32 {
+pub fn read_scause() -> u32 {
     let tmp: u32;
+    unsafe {
+        asm!("csrr {},scause", out(reg) tmp);
+    }
     tmp
 }
+pub fn read_stval() -> u32 {
+    let tmp: u32;
+    unsafe {
+        asm!("csrr {},stval", out(reg) tmp);
+    }
+    tmp
+}
+pub fn read_sepc() -> u32 {
+    let tmp: u32;
+    unsafe {
+        asm!("csrr {},sepc", out(reg) tmp);
+    }
+    tmp
+}
+pub fn write_stvec(value: u32) {
+    unsafe {
+        asm!("csrw stvec, {}",in(reg) value);
+    }
+}
 
-extern "C" fn handle_trap(f: *const Trap_frame) {}
+#[unsafe(no_mangle)]
+pub extern "C" fn handle_trap(f: *const Trap_frame) {
+    let scause = read_scause();
+    let stval = read_stval();
+    let user_pc = read_sepc(); // program counter
+
+    panic!(
+        "Unexpected Trap: scause={}, stval={}, sepc={}",
+        scause, stval, user_pc
+    );
+}

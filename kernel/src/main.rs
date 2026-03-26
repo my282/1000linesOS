@@ -1,4 +1,4 @@
-#![no_std]
+#![no_std] // dismiss this error
 #![no_main]
 mod common;
 mod kernel;

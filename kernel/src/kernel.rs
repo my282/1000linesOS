@@ -1,10 +1,9 @@
-use crate::println;
 use core::arch::asm;
 use core::arch::global_asm;
 use core::arch::naked_asm;
 use core::ptr;
 
-use super::trap;
+use crate::trap::write_stvec;
 
 global_asm!(
     r#"
@@ -94,6 +93,7 @@ unsafe extern "C" {
     static __bss: u8;
     static __bss_end: u8;
     static __stack_top: u8;
+    fn trap_handler();
 }
 
 struct Sbiret {
@@ -144,6 +144,10 @@ pub extern "C" fn kernel_main() {
         let bss_start = ptr::addr_of!(__bss) as usize;
         let bss_end = ptr::addr_of!(__bss_end) as usize;
         memset(__bss as *mut u8, 0, bss_end - bss_start);
+
+        let trap_addr = trap_handler as *const () as usize as u32;
+        write_stvec(trap_addr);
+        asm!("unimp");
     }
 }
 
