@@ -3,6 +3,7 @@ use core::fmt::{self, Write};
 use core::ptr;
 
 pub struct Console;
+pub const PAGE_SIZE: u32 = 4096;
 
 impl Write for Console {
     fn write_str(&mut self, s: &str) -> fmt::Result {

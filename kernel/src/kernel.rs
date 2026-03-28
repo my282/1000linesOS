@@ -1,3 +1,5 @@
+use crate::common::PAGE_SIZE;
+use crate::println;
 use core::arch::asm;
 use core::arch::global_asm;
 use core::arch::naked_asm;
@@ -93,6 +95,8 @@ unsafe extern "C" {
     static __bss: u8;
     static __bss_end: u8;
     static __stack_top: u8;
+    static __free_ram: u8;
+    static __free_ram_end: u8;
     fn trap_handler();
 }
 
@@ -138,16 +142,45 @@ pub fn putchar(ch: char) {
     sbi_call(ch as i32, 0, 0, 0, 0, 0, 0, 1);
 }
 
+static mut NEXT_PADDR: u32 = 0; // global!
+unsafe fn init_allocater() {
+    unsafe {
+        NEXT_PADDR = ptr::addr_of!(__free_ram) as u32;
+    }
+}
+
+unsafe fn alloc_pages(n: u32) -> u32 {
+    let free_ram_end = ptr::addr_of!(__free_ram_end) as u32;
+
+    unsafe {
+        let paddr = NEXT_PADDR;
+        NEXT_PADDR += n * PAGE_SIZE;
+
+        if NEXT_PADDR > free_ram_end {
+            panic!("out of memory");
+        }
+        memset(paddr as *mut u8, 0, (n * PAGE_SIZE) as usize);
+        paddr
+    }
+}
+
 #[unsafe(no_mangle)]
 pub extern "C" fn kernel_main() {
     unsafe {
         let bss_start = ptr::addr_of!(__bss) as usize;
         let bss_end = ptr::addr_of!(__bss_end) as usize;
-        memset(__bss as *mut u8, 0, bss_end - bss_start);
+        memset(bss_start as *mut u8, 0, bss_end - bss_start);
 
         let trap_addr = trap_handler as *const () as usize as u32;
         write_stvec(trap_addr);
-        asm!("unimp");
+
+        init_allocater();
+        let paddr0: u32 = alloc_pages(2);
+        let paddr1: u32 = alloc_pages(1);
+        println!("alloc_pages test: paddr0=0x{:x}", paddr0);
+        println!("alloc_pages test: paddr1=0x{:x}", paddr1);
+
+        panic!("Booted!");
     }
 }
 
