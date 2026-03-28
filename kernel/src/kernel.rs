@@ -164,6 +164,10 @@ unsafe fn alloc_pages(n: u32) -> u32 {
     }
 }
 
+// manage processes
+
+// end
+
 #[unsafe(no_mangle)]
 pub extern "C" fn kernel_main() {
     unsafe {
