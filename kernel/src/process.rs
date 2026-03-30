@@ -1,14 +1,70 @@
+use super::kernel::alloc_pages;
 use core::arch::naked_asm;
 
 pub const PROCS_MAX: u8 = 8;
 pub const PROCS_UNUSED: u8 = 0;
 pub const PROCS_RUNNABLE: u8 = 1;
 
+#[derive(Clone, Copy)]
 pub struct Process {
     pub pid: i32,
-    pub state: i32,
-    pub sp: u32,
-    pub stack_addr: u32,
+    pub state: u8,
+    pub sp: usize,
+    pub stack_addr: usize,
+    pub stack_size: usize,
+}
+
+impl Process {
+    pub const fn new() -> Self {
+        Process {
+            pid: 0,
+            state: 0,
+            sp: 0,
+            stack_addr: 0,
+            stack_size: 0,
+        }
+    }
+    pub fn create(pc: usize) -> Self {
+        // pc(program counter): adress of funcion you want the process to call first
+        let mut i = 0;
+        let mut proc = Process::new();
+        unsafe {
+            for _ in 0..(PROCS_MAX as usize) {
+                if PROCS[i].state == PROCS_UNUSED {
+                    break;
+                }
+                i += 1;
+            }
+        }
+
+        if i == (PROCS_MAX - 1) as usize {
+            panic!("no free process slots");
+        }
+
+        proc.pid = (i + 1) as i32;
+        proc.state = PROCS_RUNNABLE;
+        unsafe {
+            proc.stack_addr = alloc_pages(2) as usize;
+        }
+        proc.stack_size = 8192;
+
+        let mut sp: *mut u32 = (proc.stack_addr + proc.stack_size) as *mut u32;
+
+        unsafe {
+            for _ in 0..12 {
+                sp = sp.sub(1);
+                sp.write(0);
+            }
+            sp = sp.sub(1);
+            sp.write(pc as u32);
+        }
+
+        unsafe {
+            PROCS[i] = proc;
+        }
+        proc.sp = sp as usize;
+        proc
+    }
 }
 
 const DAMMY_PROC: Process = Process {
@@ -16,6 +72,7 @@ const DAMMY_PROC: Process = Process {
     state: 0,
     sp: 0,
     stack_addr: 0,
+    stack_size: 0,
 };
 
 pub static mut PROCS: [Process; PROCS_MAX as usize] = [DAMMY_PROC; PROCS_MAX as usize];

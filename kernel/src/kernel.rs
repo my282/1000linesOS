@@ -1,5 +1,7 @@
 use crate::common::PAGE_SIZE;
 use crate::println;
+use crate::process::Process;
+use crate::process::switch_context;
 use core::arch::asm;
 use core::arch::global_asm;
 use core::arch::naked_asm;
@@ -149,7 +151,7 @@ unsafe fn init_allocater() {
     }
 }
 
-unsafe fn alloc_pages(n: u32) -> u32 {
+pub unsafe fn alloc_pages(n: u32) -> u32 {
     let free_ram_end = ptr::addr_of!(__free_ram_end) as u32;
 
     unsafe {
@@ -164,7 +166,46 @@ unsafe fn alloc_pages(n: u32) -> u32 {
     }
 }
 
-// manage processes
+// functions for process
+
+fn delay() {
+    for _ in 0..30000000 {
+        unsafe {
+            asm!("nop");
+        }
+    }
+}
+
+extern "C" fn proc_a_entry() {
+    println!("Starting process A...");
+    loop {
+        putchar('A');
+        unsafe {
+            let proc_a_sp = ptr::addr_of!(PROC_A.sp);
+            let proc_b_sp = ptr::addr_of!(PROC_B.sp);
+            switch_context(proc_a_sp as *mut u32, proc_b_sp as *const u32);
+        }
+        delay();
+    }
+}
+
+extern "C" fn proc_b_entry() {
+    println!("Starting process B...");
+    loop {
+        putchar('B');
+        unsafe {
+            let proc_a_sp = ptr::addr_of!(PROC_A.sp);
+            let proc_b_sp = ptr::addr_of!(PROC_B.sp);
+            switch_context(proc_b_sp as *mut u32, proc_a_sp as *const u32);
+        }
+        delay();
+    }
+}
+// end
+
+// static processes
+static mut PROC_A: Process = Process::new();
+static mut PROC_B: Process = Process::new();
 
 // end
 
@@ -179,12 +220,12 @@ pub extern "C" fn kernel_main() {
         write_stvec(trap_addr);
 
         init_allocater();
-        let paddr0: u32 = alloc_pages(2);
-        let paddr1: u32 = alloc_pages(1);
-        println!("alloc_pages test: paddr0=0x{:x}", paddr0);
-        println!("alloc_pages test: paddr1=0x{:x}", paddr1);
 
-        panic!("Booted!");
+        PROC_A = Process::create(proc_a_entry as usize);
+        PROC_B = Process::create(proc_b_entry as usize);
+        proc_a_entry();
+
+        panic!("Unreachable here!");
     }
 }
 
