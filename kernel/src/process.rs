@@ -5,9 +5,8 @@ pub const PROCS_MAX: u8 = 8;
 pub const PROCS_UNUSED: u8 = 0;
 pub const PROCS_RUNNABLE: u8 = 1;
 
-#[derive(Clone, Copy)]
 pub struct Process {
-    pub pid: i32,
+    pub pid: usize,
     pub state: u8,
     pub sp: usize,
     pub stack_addr: usize,
@@ -15,7 +14,7 @@ pub struct Process {
 }
 
 impl Process {
-    pub const fn new() -> Self {
+    pub const fn empty() -> Self {
         Process {
             pid: 0,
             state: 0,
@@ -24,10 +23,10 @@ impl Process {
             stack_size: 0,
         }
     }
-    pub fn create(pc: usize) -> Self {
+    pub fn create(pc: usize) -> &'static mut Self {
         // pc(program counter): adress of funcion you want the process to call first
         let mut i = 0;
-        let mut proc = Process::new();
+
         unsafe {
             for _ in 0..(PROCS_MAX as usize) {
                 if PROCS[i].state == PROCS_UNUSED {
@@ -41,29 +40,22 @@ impl Process {
             panic!("no free process slots");
         }
 
-        proc.pid = (i + 1) as i32;
-        proc.state = PROCS_RUNNABLE;
         unsafe {
+            let proc = &mut PROCS[i as usize];
+            proc.pid = i + 1;
+            proc.state = PROCS_RUNNABLE;
             proc.stack_addr = alloc_pages(2) as usize;
-        }
-        proc.stack_size = 8192;
-
-        let mut sp: *mut u32 = (proc.stack_addr + proc.stack_size) as *mut u32;
-
-        unsafe {
+            proc.stack_size = 8192;
+            let mut sp: *mut u32 = (proc.stack_addr + proc.stack_size) as *mut u32;
             for _ in 0..12 {
                 sp = sp.sub(1);
                 sp.write(0);
             }
             sp = sp.sub(1);
             sp.write(pc as u32);
+            proc.sp = sp as usize;
+            proc
         }
-
-        unsafe {
-            PROCS[i] = proc;
-        }
-        proc.sp = sp as usize;
-        proc
     }
 }
 
@@ -76,6 +68,8 @@ const DAMMY_PROC: Process = Process {
 };
 
 pub static mut PROCS: [Process; PROCS_MAX as usize] = [DAMMY_PROC; PROCS_MAX as usize];
+pub static mut CURRENT_PROC: Process = Process::empty();
+pub static mut IDLE_PROC: Process = Process::empty();
 
 #[unsafe(naked)]
 pub unsafe extern "C" fn switch_context(prev_sp: *mut u32, next_sp: *const u32) {
@@ -116,3 +110,16 @@ pub unsafe extern "C" fn switch_context(prev_sp: *mut u32, next_sp: *const u32) 
         "ret"
     );
 }
+
+// fn yeild() {
+//     unsafe {
+//         let mut next = IDLE_PROC;
+//         for i in 0..PROCS_MAX {
+//             let proc = &PROCS[(CURRENT_PROC.pid + i as usize) % PROCS_MAX as usize];
+//             if proc.state == PROCS_RUNNABLE && proc.pid > 0 {
+//                 next = proc;
+//                 break;
+//             }
+//         }
+//     }
+// }

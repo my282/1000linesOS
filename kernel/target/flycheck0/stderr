@@ -1,5 +1,5 @@
-   0.009079026s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: fingerprint error for kernel v0.1.0 (/home/famous282/1000linesOS/kernel)/Check { test: true }/TargetInner { name: "kernel", tested: false, doc: true, ..: with_path("/home/famous282/1000linesOS/kernel/src/main.rs", Edition2024) }
-   0.009122069s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-1a5aa71dabc2c5ac/test-bin-kernel`
+   0.008474496s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: fingerprint error for kernel v0.1.0 (/home/famous282/1000linesOS/kernel)/Check { test: true }/TargetInner { name: "kernel", tested: false, doc: true, ..: with_path("/home/famous282/1000linesOS/kernel/src/main.rs", Edition2024) }
+   0.008511127s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-a5db86edb9fb2168/test-bin-kernel`
 
 Caused by:
     No such file or directory (os error 2)
@@ -20,33 +20,33 @@ Stack backtrace:
   12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
   13: std::rt::lang_start::<()>::{closure#0}
   14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/core/src/ops/function.rs:287:21
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
   15: std::panicking::catch_unwind::do_call
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/std/src/panicking.rs:581:40
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
   16: std::panicking::catch_unwind
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/std/src/panicking.rs:544:19
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
   17: std::panic::catch_unwind
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/std/src/panic.rs:359:14
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
   18: std::rt::lang_start_internal::{{closure}}
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/std/src/rt.rs:175:24
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
   19: std::panicking::catch_unwind::do_call
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/std/src/panicking.rs:581:40
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
   20: std::panicking::catch_unwind
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/std/src/panicking.rs:544:19
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
   21: std::panic::catch_unwind
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/std/src/panic.rs:359:14
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
   22: std::rt::lang_start_internal
-             at /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c/library/std/src/rt.rs:171:5
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
   23: main
   24: __libc_start_call_main
              at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
   25: __libc_start_main_impl
              at ./csu/../csu/libc-start.c:360:3
   26: <unknown>
-   0.066902307s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: stale: changed "/home/famous282/1000linesOS/kernel/src/kernel.rs"
-   0.066909623s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:           (vs) "/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-09ceea3a553a0665/dep-bin-kernel"
-   0.066911677s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:                FileTime { seconds: 1774794837, nanos: 834522813 } < FileTime { seconds: 1774794841, nanos: 660008206 }
-   0.066946076s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: fingerprint dirty for kernel v0.1.0 (/home/famous282/1000linesOS/kernel)/Check { test: false }/TargetInner { name: "kernel", tested: false, doc: true, ..: with_path("/home/famous282/1000linesOS/kernel/src/main.rs", Edition2024) }
-   0.066954463s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleItem(ChangedFile { reference: "/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-09ceea3a553a0665/dep-bin-kernel", reference_mtime: FileTime { seconds: 1774794837, nanos: 834522813 }, stale: "/home/famous282/1000linesOS/kernel/src/kernel.rs", stale_mtime: FileTime { seconds: 1774794841, nanos: 660008206 } }))
+   0.064866143s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: stale: changed "/home/famous282/1000linesOS/kernel/src/kernel.rs"
+   0.064888871s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:           (vs) "/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-0eafec89fa035dc5/dep-bin-kernel"
+   0.064892380s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:                FileTime { seconds: 1774965288, nanos: 13145520 } < FileTime { seconds: 1774965301, nanos: 958386175 }
+   0.064920444s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint: fingerprint dirty for kernel v0.1.0 (/home/famous282/1000linesOS/kernel)/Check { test: false }/TargetInner { name: "kernel", tested: false, doc: true, ..: with_path("/home/famous282/1000linesOS/kernel/src/main.rs", Edition2024) }
+   0.064942739s  INFO prepare_target{force=false package_id=kernel v0.1.0 (/home/famous282/1000linesOS/kernel) target="kernel"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleItem(ChangedFile { reference: "/home/famous282/1000linesOS/kernel/target/riscv32imac-unknown-none-elf/debug/.fingerprint/kernel-0eafec89fa035dc5/dep-bin-kernel", reference_mtime: FileTime { seconds: 1774965288, nanos: 13145520 }, stale: "/home/famous282/1000linesOS/kernel/src/kernel.rs", stale_mtime: FileTime { seconds: 1774965301, nanos: 958386175 } }))
     Checking kernel v0.1.0 (/home/famous282/1000linesOS/kernel)
 error: could not compile `kernel` (bin "kernel" test) due to 1 previous error; 1 warning emitted

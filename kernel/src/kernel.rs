@@ -204,8 +204,8 @@ extern "C" fn proc_b_entry() {
 // end
 
 // static processes
-static mut PROC_A: Process = Process::new();
-static mut PROC_B: Process = Process::new();
+static mut PROC_A: &mut Process = &mut Process::empty();
+static mut PROC_B: &mut Process = &mut Process::empty();
 
 // end
 
