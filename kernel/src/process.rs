@@ -23,7 +23,7 @@ impl Process {
             stack_size: 0,
         }
     }
-    pub fn create(pc: usize) -> &'static mut Self {
+    pub fn create(pc: usize) -> *mut Self {
         // pc(program counter): adress of funcion you want the process to call first
         let mut i = 0;
 
@@ -41,19 +41,19 @@ impl Process {
         }
 
         unsafe {
-            let proc = &mut PROCS[i as usize];
-            proc.pid = i + 1;
-            proc.state = PROCS_RUNNABLE;
-            proc.stack_addr = alloc_pages(2) as usize;
-            proc.stack_size = 8192;
-            let mut sp: *mut u32 = (proc.stack_addr + proc.stack_size) as *mut u32;
+            let proc = core::ptr::addr_of_mut!(PROCS[i]);
+            (*proc).pid = i + 1;
+            (*proc).state = PROCS_RUNNABLE;
+            (*proc).stack_addr = alloc_pages(2) as usize;
+            (*proc).stack_size = 8192;
+            let mut sp: *mut u32 = ((*proc).stack_addr + (*proc).stack_size) as *mut u32;
             for _ in 0..12 {
                 sp = sp.sub(1);
                 sp.write(0);
             }
             sp = sp.sub(1);
             sp.write(pc as u32);
-            proc.sp = sp as usize;
+            (*proc).sp = sp as usize;
             proc
         }
     }
@@ -68,8 +68,8 @@ const DAMMY_PROC: Process = Process {
 };
 
 pub static mut PROCS: [Process; PROCS_MAX as usize] = [DAMMY_PROC; PROCS_MAX as usize];
-pub static mut CURRENT_PROC: Process = Process::empty();
-pub static mut IDLE_PROC: Process = Process::empty();
+pub static mut CURRENT_PROC: *mut Process = core::ptr::null_mut();
+pub static mut IDLE_PROC: *mut Process = core::ptr::null_mut();
 
 #[unsafe(naked)]
 pub unsafe extern "C" fn switch_context(prev_sp: *mut u32, next_sp: *const u32) {
@@ -111,15 +111,27 @@ pub unsafe extern "C" fn switch_context(prev_sp: *mut u32, next_sp: *const u32) 
     );
 }
 
-// fn yeild() {
-//     unsafe {
-//         let mut next = IDLE_PROC;
-//         for i in 0..PROCS_MAX {
-//             let proc = &PROCS[(CURRENT_PROC.pid + i as usize) % PROCS_MAX as usize];
-//             if proc.state == PROCS_RUNNABLE && proc.pid > 0 {
-//                 next = proc;
-//                 break;
-//             }
-//         }
-//     }
-// }
+pub fn yeild() {
+    unsafe {
+        let mut next = IDLE_PROC; // Programmer is held responsible for this management
+        for i in 0..PROCS_MAX {
+            let proc = core::ptr::addr_of_mut!(
+                PROCS[((*CURRENT_PROC).pid + i as usize) % PROCS_MAX as usize]
+            );
+            if (*proc).state == PROCS_RUNNABLE && (*proc).pid > 0 {
+                next = proc;
+                break;
+            }
+        }
+
+        if core::ptr::eq(next, CURRENT_PROC) {
+            return;
+        }
+
+        let prev = CURRENT_PROC;
+        CURRENT_PROC = next;
+        let prev_sp = core::ptr::addr_of!((*prev).sp);
+        let next_sp = core::ptr::addr_of!((*next).sp);
+        switch_context(prev_sp as *mut u32, next_sp as *const u32);
+    }
+}

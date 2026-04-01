@@ -1,10 +1,14 @@
 use crate::common::PAGE_SIZE;
 use crate::println;
+use crate::process::CURRENT_PROC;
+use crate::process::IDLE_PROC;
 use crate::process::Process;
 use crate::process::switch_context;
+use crate::process::yeild;
 use core::arch::asm;
 use core::arch::global_asm;
 use core::arch::naked_asm;
+use core::panic;
 use core::ptr;
 
 use crate::trap::write_stvec;
@@ -180,11 +184,7 @@ extern "C" fn proc_a_entry() {
     println!("Starting process A...");
     loop {
         putchar('A');
-        unsafe {
-            let proc_a_sp = ptr::addr_of!(PROC_A.sp);
-            let proc_b_sp = ptr::addr_of!(PROC_B.sp);
-            switch_context(proc_a_sp as *mut u32, proc_b_sp as *const u32);
-        }
+        yeild();
         delay();
     }
 }
@@ -193,39 +193,42 @@ extern "C" fn proc_b_entry() {
     println!("Starting process B...");
     loop {
         putchar('B');
-        unsafe {
-            let proc_a_sp = ptr::addr_of!(PROC_A.sp);
-            let proc_b_sp = ptr::addr_of!(PROC_B.sp);
-            switch_context(proc_b_sp as *mut u32, proc_a_sp as *const u32);
-        }
+        yeild();
         delay();
     }
 }
 // end
 
 // static processes
-static mut PROC_A: &mut Process = &mut Process::empty();
-static mut PROC_B: &mut Process = &mut Process::empty();
+static mut PROC_A: *mut Process = core::ptr::null_mut();
+static mut PROC_B: *mut Process = core::ptr::null_mut();
 
 // end
 
 #[unsafe(no_mangle)]
 pub extern "C" fn kernel_main() {
     unsafe {
+        // set the memory
         let bss_start = ptr::addr_of!(__bss) as usize;
         let bss_end = ptr::addr_of!(__bss_end) as usize;
         memset(bss_start as *mut u8, 0, bss_end - bss_start);
 
+        // setup trap handler
         let trap_addr = trap_handler as *const () as usize as u32;
         write_stvec(trap_addr);
 
+        // initialize allocater
         init_allocater();
+
+        IDLE_PROC = Process::create(0);
+        (*IDLE_PROC).pid = 0;
+        CURRENT_PROC = IDLE_PROC;
 
         PROC_A = Process::create(proc_a_entry as usize);
         PROC_B = Process::create(proc_b_entry as usize);
-        proc_a_entry();
 
-        panic!("Unreachable here!");
+        yeild();
+        panic!("switched to idle process");
     }
 }
 
