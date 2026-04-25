@@ -49,3 +49,4 @@ CPU doesn't know which process it is running.
 CPU only know "I have to run the instruction pc points and use the memory sp points as a workplace."
 So, we change values of these registers to change running process.
 
+# Kernel stack and 
