@@ -18,7 +18,7 @@ global_asm!(
 .balign 4
 .global trap_handler
 trap_handler:
-    csrw sscratch, sp
+    csrrw sp, sscratch, sp
 
     addi sp, sp, -4 * 31
 
@@ -56,8 +56,10 @@ trap_handler:
     csrr a0, sscratch
     sw a0, 4 * 30(sp)
 
-    mv a0, sp
+    addi a0, sp, 4 * 31
+    csrw sscratch, a0
 
+    mv a0, sp
     call handle_trap
 
     lw ra,  4 * 0(sp)

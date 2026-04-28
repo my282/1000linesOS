@@ -1,4 +1,5 @@
 use super::kernel::alloc_pages;
+use core::arch::asm;
 use core::arch::naked_asm;
 
 pub const PROCS_MAX: u8 = 8;
@@ -127,6 +128,11 @@ pub fn yeild() {
         if core::ptr::eq(next, CURRENT_PROC) {
             return;
         }
+
+        asm!(
+            "csrw sscratch, {0}",
+            in(reg) (*CURRENT_PROC).stack_addr + (*CURRENT_PROC).stack_size
+        );
 
         let prev = CURRENT_PROC;
         CURRENT_PROC = next;
