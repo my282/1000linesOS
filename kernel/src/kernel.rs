@@ -113,6 +113,13 @@ struct Sbiret {
     value: i32,
 }
 
+const SATP_SV32: usize = 1 << 31;
+const PAGE_V: isize = 1 << 0;
+const PAGE_R: isize = 1 << 1;
+const PAGE_W: isize = 1 << 2;
+const PAGE_X: isize = 1 << 3;
+const PAGE_U: isize = 1 << 4;
+
 unsafe fn memset(buf: *mut u8, c: u8, n: usize) {
     let mut p = buf;
     for _ in 0..n {
@@ -171,6 +178,8 @@ pub unsafe fn alloc_pages(n: u32) -> u32 {
         paddr
     }
 }
+
+pub fn map_page(table1: usize, vaddr: usize, paddr: usize, flags: usize) {}
 
 // functions for process
 

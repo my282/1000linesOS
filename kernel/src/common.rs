@@ -80,3 +80,5 @@ pub unsafe fn strcmp(s1: *const u8, s2: *const u8) -> isize {
         *s1 as isize - *s2 as isize
     }
 }
+
+pub fn is_aligned(value){}
