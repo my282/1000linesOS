@@ -1,4 +1,4 @@
-./rough_test
+./rough_test/*
 ./memo_jp.md
 ./*.bin
-./kernel/target
+./kernel/target/*
